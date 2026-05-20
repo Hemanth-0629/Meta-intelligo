@@ -1,0 +1,15 @@
+<svg viewBox="0 0 270 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Geometric mark: three angular diagonal bars -->
+  <g>
+    <!-- Bar 1 (left) -->
+    <polygon points="4,40 12,8 17,8 9,40" fill="white"/>
+    <!-- Bar 2 (middle) - taller accent -->
+    <polygon points="15,40 24,4 29,4 20,40" fill="white"/>
+    <!-- Bar 3 (right) with notch creating M silhouette -->
+    <polygon points="27,40 35,8 40,8 32,40" fill="white"/>
+  </g>
+  <!-- Divider line -->
+  <line x1="52" y1="10" x2="52" y2="38" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+  <!-- META INTELLIGO text -->
+  <text x="62" y="30" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="white" letter-spacing="3.5">META INTELLIGO</text>
+</svg>

@@ -33,8 +33,8 @@ const contactInfo = [
   {
     icon: Phone,
     label: "Phone",
-    value: "+91 93 92 82 5302",
-    href: "tel:+919392825302",
+    value: "+91 90 59 49 5102",
+    href: "tel:+919059495102",
     color: "text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/20",
@@ -52,7 +52,7 @@ const contactInfo = [
     icon: MessageCircle,
     label: "WhatsApp",
     value: "Chat instantly",
-    href: "https://wa.me/919392825302",
+    href: "https://wa.me/919059495102",
     color: "text-green-400",
     bg: "bg-green-500/10",
     border: "border-green-500/20",
@@ -231,7 +231,7 @@ export function ContactPageFull() {
                         </p>
                         <div className="flex items-center justify-center gap-3">
                           <a
-                            href="https://wa.me/919392825302"
+                            href="https://wa.me/919059495102"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn-secondary text-sm px-5 py-2.5 inline-flex"

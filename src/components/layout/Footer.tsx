@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Brain,
@@ -61,7 +62,7 @@ const socialLinks = [
   },
   {
     icon: MessageCircle,
-    href: "https://wa.me/919392825302",
+    href: "https://wa.me/919059495102",
     label: "WhatsApp",
     color: "hover:text-green-400",
   },
@@ -102,7 +103,7 @@ export function Footer() {
                 Start a Project <ArrowRight className="w-4 h-4" />
               </Link>
               <a
-                href="https://wa.me/919392825302"
+                href="https://wa.me/919059495102"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-secondary px-8 py-4"
@@ -118,14 +119,14 @@ export function Footer() {
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3 group mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <Cpu className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <span className="text-lg font-bold text-white">Meta Intelligo</span>
-                <div className="text-[10px] text-blue-400 font-medium tracking-widest uppercase">Technologies</div>
-              </div>
+            <Link href="/" className="inline-flex mb-6">
+              <Image
+                src="/images/logo.svg"
+                alt="Meta Intelligo Technologies"
+                width={180}
+                height={36}
+                className="h-9 w-auto"
+              />
             </Link>
 
             <p className="text-white/50 text-sm leading-relaxed mb-6 max-w-xs">
@@ -137,13 +138,13 @@ export function Footer() {
             {/* Contact Details */}
             <div className="space-y-3 mb-8">
               <a
-                href="tel:+919392825302"
+                href="tel:+919059495102"
                 className="flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors group"
               >
                 <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
                   <Phone className="w-3.5 h-3.5 text-blue-400" />
                 </div>
-                +91 93 92 82 5302
+                +91 90 59 49 5102
               </a>
               <a
                 href="mailto:info@metaintelligo.com"

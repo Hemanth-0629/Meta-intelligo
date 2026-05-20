@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
@@ -107,17 +108,16 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-9 h-9">
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 opacity-80 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute inset-0 rounded-lg flex items-center justify-center">
-                  <Cpu className="w-5 h-5 text-white" />
-                </div>
-                <div className="absolute inset-0 rounded-lg glow-blue opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-              <div>
-                <span className="text-lg font-bold text-white tracking-tight">Meta Intelligo</span>
-                <div className="text-[10px] text-blue-400 font-medium tracking-widest uppercase -mt-0.5">Technologies</div>
+            <Link href="/" className="flex items-center group">
+              <div className="relative h-9 w-auto transition-opacity group-hover:opacity-90">
+                <Image
+                  src="/images/logo.svg"
+                  alt="Meta Intelligo Technologies"
+                  width={180}
+                  height={36}
+                  className="h-9 w-auto"
+                  priority
+                />
               </div>
             </Link>
 
@@ -152,7 +152,7 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.97 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[620px] glass-strong rounded-2xl shadow-2xl p-6 border border-white/[0.06]"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[620px] rounded-2xl shadow-2xl p-6 border border-white/[0.10]" style={{background: 'rgba(5, 10, 22, 0.97)', backdropFilter: 'blur(24px)'}}
                     >
                       <div className="grid grid-cols-2 gap-2">
                         {services.map((s) => (
@@ -216,7 +216,7 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.97 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[380px] glass-strong rounded-2xl shadow-2xl p-5 border border-white/[0.06]"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[380px] rounded-2xl shadow-2xl p-5 border border-white/[0.10]" style={{background: 'rgba(5, 10, 22, 0.97)', backdropFilter: 'blur(24px)'}}
                     >
                       <div className="grid grid-cols-2 gap-2">
                         {industries.map((ind) => (
@@ -265,14 +265,6 @@ export function Navbar() {
 
             {/* CTA */}
             <div className="hidden lg:flex items-center gap-3">
-              <Link
-                href="https://wa.me/919392825302"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-secondary text-sm px-4 py-2"
-              >
-                WhatsApp
-              </Link>
               <Link href="/contact" className="btn-primary text-sm px-5 py-2.5">
                 Get Started
                 <ArrowRight className="w-4 h-4" />
@@ -359,7 +351,7 @@ export function Navbar() {
                     Get Started <ArrowRight className="w-4 h-4" />
                   </Link>
                   <a
-                    href="tel:+919392825302"
+                    href="tel:+919059495102"
                     className="btn-secondary w-full justify-center"
                   >
                     Call +91 93 92 82 5302

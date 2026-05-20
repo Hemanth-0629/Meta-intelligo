@@ -325,11 +325,11 @@ export function AboutPage() {
                     </div>
                   </div>
                 </div>
-                <a href="tel:+919392825302" className="flex items-center gap-3 group">
+                <a href="tel:+919059495102" className="flex items-center gap-3 group">
                   <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
                     <Phone className="w-4 h-4 text-blue-400" />
                   </div>
-                  <span className="text-sm text-white/50 group-hover:text-white transition-colors">+91 93 92 82 5302</span>
+                  <span className="text-sm text-white/50 group-hover:text-white transition-colors">+91 90 59 49 5102</span>
                 </a>
                 <a href="mailto:info@metaintelligo.com" className="flex items-center gap-3 group">
                   <div className="w-9 h-9 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">

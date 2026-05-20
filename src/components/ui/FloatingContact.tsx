@@ -8,7 +8,7 @@ const actions = [
   {
     icon: MessageCircle,
     label: "WhatsApp",
-    href: "https://wa.me/919392825302",
+    href: "https://wa.me/919059495102",
     bg: "bg-green-500",
     hoverBg: "hover:bg-green-400",
     external: true,
@@ -16,7 +16,7 @@ const actions = [
   {
     icon: Phone,
     label: "Call Us",
-    href: "tel:+919392825302",
+    href: "tel:+919059495102",
     bg: "bg-blue-500",
     hoverBg: "hover:bg-blue-400",
     external: false,
@@ -43,7 +43,7 @@ export function FloatingContact() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3" style={{ marginRight: 0 }}>
       <AnimatePresence>
         {open &&
           actions.map((action, i) => (
@@ -76,7 +76,7 @@ export function FloatingContact() {
 
       {/* WhatsApp always visible */}
       <motion.a
-        href="https://wa.me/919392825302"
+        href="https://wa.me/919059495102"
         target="_blank"
         rel="noopener noreferrer"
         className={cn(

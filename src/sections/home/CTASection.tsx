@@ -30,11 +30,11 @@ export function CTASection() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link href="/contact" className="btn-primary px-10 py-5 text-base">
-              Schedule a Free Consultation
+              Launch Your Digital Journey
               <ArrowRight className="w-5 h-5" />
             </Link>
             <a
-              href="https://wa.me/919392825302"
+              href="https://wa.me/919059495102"
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary px-10 py-5 text-base"
@@ -47,11 +47,11 @@ export function CTASection() {
           {/* Quick contact options */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm">
             <a
-              href="tel:+919392825302"
+              href="tel:+919059495102"
               className="flex items-center gap-2 text-white/40 hover:text-white/70 transition-colors"
             >
               <Phone className="w-4 h-4 text-blue-400" />
-              +91 93 92 82 5302
+              +91 90 59 49 5102
             </a>
             <div className="w-px h-4 bg-white/10 hidden sm:block" />
             <a
