@@ -2,23 +2,15 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { ChatMessage, ChatSession } from "@/types/chatbot";
-import {
-  buildResponse,
-  generateId,
-  resolveSuggestion,
-} from "@/utils/chatbot-engine";
+import { buildResponse, generateId } from "@/utils/chatbot-engine";
 import { greetings, quickSuggestions } from "@/data/knowledge-base";
 
-const SESSION_KEY = "mi_chat_session";
+const SESSION_KEY = "mi_chat_session_v2";
 const MAX_HISTORY = 40;
-const TYPING_DELAY_MIN = 600;
-const TYPING_DELAY_MAX = 1400;
 
+// Simulate realistic typing delay based on response length
 function typingDelay(text: string): number {
-  // Simulate reading time — longer messages take a bit more
-  const base = TYPING_DELAY_MIN;
-  const extra = Math.min(text.length * 1.5, TYPING_DELAY_MAX - TYPING_DELAY_MIN);
-  return base + extra;
+  return Math.min(500 + text.length * 1.2, 1800);
 }
 
 function makeGreeting(): ChatMessage {
@@ -32,18 +24,18 @@ function makeGreeting(): ChatMessage {
 }
 
 function loadSession(): ChatMessage[] {
-  if (typeof window === "undefined") return [makeGreeting()];
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(SESSION_KEY);
-    if (!raw) return [makeGreeting()];
+    if (!raw) return [];
     const parsed: ChatSession = JSON.parse(raw);
-    // Re-hydrate Date objects
+    if (!parsed.messages?.length) return [];
     return parsed.messages.map((m) => ({
       ...m,
       timestamp: new Date(m.timestamp),
     }));
   } catch {
-    return [makeGreeting()];
+    return [];
   }
 }
 
@@ -55,9 +47,7 @@ function saveSession(messages: ChatMessage[]) {
       context: [],
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  } catch {
-    /* quota exceeded — silently skip */
-  }
+  } catch { /* quota exceeded */ }
 }
 
 export function useChatbot() {
@@ -69,100 +59,59 @@ export function useChatbot() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const hydrated = useRef(false);
 
-  // Hydrate from localStorage after mount
+  // Hydrate localStorage once on mount
   useEffect(() => {
     if (hydrated.current) return;
     hydrated.current = true;
     const saved = loadSession();
-    if (saved.length > 1) setMessages(saved);
+    if (saved.length > 0) setMessages(saved);
   }, []);
 
-  // Save on every change
+  // Persist on every change
   useEffect(() => {
     if (!hydrated.current) return;
     saveSession(messages);
   }, [messages]);
 
-  // Auto-scroll
+  // Auto-scroll to latest message
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 50);
   }, [messages, isTyping]);
 
-  // Notification badge when closed
+  // Badge when closed and new message arrives
   useEffect(() => {
     if (!isOpen && messages.length > 1) setHasNew(true);
   }, [messages, isOpen]);
 
-  const open = useCallback(() => {
-    setIsOpen(true);
-    setHasNew(false);
-  }, []);
-
+  const open  = useCallback(() => { setIsOpen(true); setHasNew(false); }, []);
   const close = useCallback(() => setIsOpen(false), []);
   const toggle = useCallback(() => {
-    setIsOpen((v) => {
-      if (!v) setHasNew(false);
-      return !v;
-    });
+    setIsOpen((v) => { if (!v) setHasNew(false); return !v; });
   }, []);
 
-  const sendMessage = useCallback(
-    async (rawText: string) => {
-      const text = rawText.trim();
-      if (!text || isTyping) return;
+  // ── Core send: used for both free-text AND chip labels ──────────────────────
+  // displayText = what shows in the bubble
+  // queryText   = what gets searched (same for free text; chip label for chips)
+  const _send = useCallback(
+    (displayText: string, queryText: string) => {
+      const display = displayText.trim();
+      const query   = queryText.trim();
+      if (!display || !query || isTyping) return;
 
-      // Add user message
       const userMsg: ChatMessage = {
         id: generateId(),
         role: "user",
-        text,
+        text: display,
         timestamp: new Date(),
       };
-
       setMessages((prev) => [...prev, userMsg]);
       setInput("");
       setIsTyping(true);
 
-      // Build response
-      const response = buildResponse(text);
-      const delay = typingDelay(response.text);
-
-      await new Promise((r) => setTimeout(r, delay));
-
-      const botMsg: ChatMessage = {
-        id: generateId(),
-        role: "bot",
-        text: response.text,
-        timestamp: new Date(),
-        suggestions: response.suggestions,
-        cta: response.cta,
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-      setIsTyping(false);
-    },
-    [isTyping]
-  );
-
-  const sendSuggestion = useCallback(
-    (label: string) => {
-      const resolved = resolveSuggestion(label);
-      // Show chip label as user text but search with the mapped query
-      const text = label.trim();
-      if (!text || isTyping) return;
-
-      const userMsg: ChatMessage = {
-        id: generateId(),
-        role: "user",
-        text,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, userMsg]);
-      setIsTyping(true);
-
-      const response = buildResponse(resolved);
-      const delay = typingDelay(response.text);
+      const response = buildResponse(query);
+      const delay    = typingDelay(response.text);
 
       setTimeout(() => {
         const botMsg: ChatMessage = {
@@ -180,10 +129,22 @@ export function useChatbot() {
     [isTyping]
   );
 
+  // Free-text send (Enter key / Send button)
+  const sendMessage = useCallback(
+    (text: string) => _send(text, text),
+    [_send]
+  );
+
+  // Chip send: display label, but engine sees the label too
+  // (engine's CHIP_TO_ID map resolves it instantly to the correct entry)
+  const sendSuggestion = useCallback(
+    (label: string) => _send(label, label),
+    [_send]
+  );
+
   const clearHistory = useCallback(() => {
-    const fresh = makeGreeting();
-    setMessages([fresh]);
-    localStorage.removeItem(SESSION_KEY);
+    setMessages([makeGreeting()]);
+    try { localStorage.removeItem(SESSION_KEY); } catch { /* */ }
   }, []);
 
   const handleKeyDown = useCallback(
@@ -197,19 +158,11 @@ export function useChatbot() {
   );
 
   return {
-    messages,
-    input,
-    setInput,
-    isTyping,
-    isOpen,
-    hasNew,
-    open,
-    close,
-    toggle,
-    sendMessage,
-    sendSuggestion,
-    clearHistory,
-    handleKeyDown,
+    messages, input, setInput,
+    isTyping, isOpen, hasNew,
+    open, close, toggle,
+    sendMessage, sendSuggestion,
+    clearHistory, handleKeyDown,
     bottomRef,
   };
 }
