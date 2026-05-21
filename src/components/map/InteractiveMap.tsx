@@ -2,49 +2,143 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Maximize2, Minimize2, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
-import { HQMarker } from "./HQMarker";
+import {
+  ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2, Compass,
+} from "lucide-react";
+import { HQMarker }      from "./HQMarker";
 import { MapOverlayCard } from "./MapOverlayCard";
 import {
-  MAP_STYLE,
+  MAP_STYLE_URL,
   MAP_INITIAL_VIEW,
   MAP_FLY_OPTIONS,
   HQ_COORDS,
+  BRAND,
 } from "./map-theme";
+import { applyThemeOverrides, add3DBuildings, addHQGlowLayer } from "./map-utils";
 
-// Mapbox token from env
-const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? "";
+// ─── Loader animation (shown while tiles download) ────────────────────────────
+function MapLoader() {
+  return (
+    <motion.div
+      key="loader"
+      exit={{ opacity: 0, transition: { duration: 0.8 } }}
+      className="absolute inset-0 z-30 flex flex-col items-center justify-center"
+      style={{
+        background: `linear-gradient(145deg, ${BRAND.navy}, ${BRAND.navyMid})`,
+      }}
+    >
+      <div className="absolute inset-0 grid-bg opacity-25 pointer-events-none" />
 
+      {/* Radar sweep */}
+      <div className="relative w-20 h-20 mb-5">
+        {/* Static rings */}
+        {[20, 40, 60, 80].map((s, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full border border-blue-500/20"
+            style={{
+              width: s, height: s,
+              top: "50%", left: "50%",
+              transform: "translate(-50%,-50%)",
+            }}
+          />
+        ))}
+        {/* Spinning sweep */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 rounded-full"
+          style={{
+            background:
+              "conic-gradient(from 0deg, transparent 60%, rgba(0,102,255,.55) 100%)",
+          }}
+        />
+        {/* Center dot */}
+        <div
+          className="absolute w-3 h-3 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            background: BRAND.blue,
+            boxShadow: `0 0 12px ${BRAND.blue}, 0 0 24px rgba(0,102,255,.5)`,
+          }}
+        />
+      </div>
+
+      <motion.p
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 1.8, repeat: Infinity }}
+        className="text-[11px] font-semibold tracking-[0.2em] uppercase text-blue-400/70"
+      >
+        Loading Map
+      </motion.p>
+    </motion.div>
+  );
+}
+
+// ─── Control button ───────────────────────────────────────────────────────────
+function MapControl({
+  icon: Icon,
+  onClick,
+  title,
+  active = false,
+}: {
+  icon: React.ElementType;
+  onClick: () => void;
+  title: string;
+  active?: boolean;
+}) {
+  return (
+    <motion.button
+      onClick={onClick}
+      title={title}
+      whileHover={{ scale: 1.08 }}
+      whileTap={{ scale: 0.92 }}
+      className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+      style={{
+        background: active
+          ? "rgba(0,102,255,.25)"
+          : "rgba(5,10,20,.88)",
+        backdropFilter: "blur(16px)",
+        border: active
+          ? "1px solid rgba(0,102,255,.4)"
+          : "1px solid rgba(255,255,255,.07)",
+        boxShadow: "0 4px 16px rgba(0,0,0,.4)",
+        color: active ? BRAND.blueLight : "rgba(255,255,255,.55)",
+      }}
+    >
+      <Icon className="w-4 h-4" />
+    </motion.button>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 export function InteractiveMap() {
   const containerRef  = useRef<HTMLDivElement>(null);
-  const mapRef        = useRef<import("mapbox-gl").Map | null>(null);
-  const [mapLoaded,   setMapLoaded]   = useState(false);
-  const [mapInstance, setMapInstance] = useState<import("mapbox-gl").Map | null>(null);
+  const mapRef        = useRef<import("maplibre-gl").Map | null>(null);
+  const [loaded,      setLoaded]      = useState(false);
+  const [mapInst,     setMapInst]     = useState<import("maplibre-gl").Map | null>(null);
   const [fullscreen,  setFullscreen]  = useState(false);
-  const [hasToken,    setHasToken]    = useState(true);
+  const [bearing,     setBearing]     = useState(MAP_FLY_OPTIONS.bearing);
+  const [pitch,       setPitch]       = useState(MAP_FLY_OPTIONS.pitch);
+  const is3D = pitch > 0;
 
-  // ── Init map ──────────────────────────────────────────────────────────────
+  // ── Initialise MapLibre ───────────────────────────────────────────────────
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
-    if (!TOKEN || TOKEN.includes("placeholder")) {
-      setHasToken(false);
-      return;
-    }
-
     let cancelled = false;
 
-    import("mapbox-gl").then((mb) => {
+    import("maplibre-gl").then(({ Map: MLMap }) => {
       if (cancelled || !containerRef.current) return;
 
-      mb.default.accessToken = TOKEN;
-
-      const map = new mb.default.Map({
+      const map = new MLMap({
         container: containerRef.current,
-        style: MAP_STYLE,
-        ...MAP_INITIAL_VIEW,
-        antialias: true,
+        style:     MAP_STYLE_URL,
+        center:    MAP_INITIAL_VIEW.center,
+        zoom:      MAP_INITIAL_VIEW.zoom,
+        pitch:     MAP_INITIAL_VIEW.pitch,
+        bearing:   MAP_INITIAL_VIEW.bearing,
         attributionControl: false,
-        logoPosition: "bottom-right",
+        maxZoom: 19,
+        minZoom: 2,
       });
 
       mapRef.current = map;
@@ -52,108 +146,41 @@ export function InteractiveMap() {
       map.on("load", () => {
         if (cancelled) return;
 
-        // ── Fog / atmosphere ──────────────────────────────────────────────
-        map.setFog({
-          range:           [0.5, 10],
-          color:           "rgba(5,10,20,0.8)",
-          "horizon-blend": 0.1,
-          "high-color":    "#050a14",
-          "space-color":   "#020817",
-          "star-intensity": 0.15,
-        } as Parameters<typeof map.setFog>[0]);
+        // Theme & 3D
+        applyThemeOverrides(map);
+        add3DBuildings(map);
+        addHQGlowLayer(map);
 
-        // ── 3D buildings ──────────────────────────────────────────────────
-        const layers = map.getStyle()?.layers ?? [];
-        const labelLayer = layers.find(
-          (l) => l.type === "symbol" && (l.layout as Record<string, unknown>)?.["text-field"]
-        );
+        // Cursor
+        map.getCanvas().style.cursor = "grab";
+        map.on("mousedown", () => (map.getCanvas().style.cursor = "grabbing"));
+        map.on("mouseup",   () => (map.getCanvas().style.cursor = "grab"));
 
-        if (!map.getLayer("3d-buildings")) {
-          map.addLayer(
-            {
-              id: "3d-buildings",
-              source: "composite",
-              "source-layer": "building",
-              filter: ["==", "extrude", "true"],
-              type: "fill-extrusion",
-              minzoom: 13,
-              paint: {
-                "fill-extrusion-color": [
-                  "interpolate", ["linear"], ["zoom"],
-                  13, "#0d1629",
-                  16, "#111f35",
-                  18, "#162040",
-                ],
-                "fill-extrusion-height": [
-                  "interpolate", ["linear"], ["zoom"],
-                  13, 0, 13.5,
-                  ["get", "height"],
-                ],
-                "fill-extrusion-base": [
-                  "interpolate", ["linear"], ["zoom"],
-                  13, 0, 13.5,
-                  ["get", "min_height"],
-                ],
-                "fill-extrusion-opacity": 0.85,
-              },
-            },
-            labelLayer?.id
-          );
-        }
+        // Sync bearing/pitch state
+        map.on("rotate", () => setBearing(Math.round(map.getBearing())));
+        map.on("pitch",  () => setPitch(Math.round(map.getPitch())));
 
-        // ── Highlight HQ building ─────────────────────────────────────────
-        if (!map.getLayer("hq-building-highlight")) {
-          map.addLayer({
-            id: "hq-building-highlight",
-            source: "composite",
-            "source-layer": "building",
-            filter: ["==", "extrude", "true"],
-            type: "fill-extrusion",
-            minzoom: 14,
-            paint: {
-              "fill-extrusion-color": "#0066FF",
-              "fill-extrusion-height": ["get", "height"],
-              "fill-extrusion-base":   ["get", "min_height"],
-              "fill-extrusion-opacity": [
-                "interpolate", ["linear"], ["zoom"],
-                14, 0, 16, 0.35,
-              ],
-            },
-          });
-        }
-
-        // ── Custom road colors ────────────────────────────────────────────
-        const roadPaints: Record<string, string> = {
-          "road-motorway-trunk":   "#1a2a4a",
-          "road-primary":          "#16213e",
-          "road-secondary-tertiary": "#111827",
-          "road-street":           "#0d1629",
-          "road-minor":            "#0a1020",
-        };
-        Object.entries(roadPaints).forEach(([id, color]) => {
-          if (map.getLayer(id)) map.setPaintProperty(id, "line-color", color);
-        });
-
-        // ── Water ─────────────────────────────────────────────────────────
-        if (map.getLayer("water")) {
-          map.setPaintProperty("water", "fill-color", "#080f1d");
-        }
-
-        // ── Fly to HQ ─────────────────────────────────────────────────────
+        // Cinematic fly-in after short pause
         setTimeout(() => {
-          if (!cancelled) map.flyTo(MAP_FLY_OPTIONS as Parameters<typeof map.flyTo>[0]);
-        }, 600);
+          if (!cancelled) {
+            map.flyTo({
+              center:   MAP_FLY_OPTIONS.center,
+              zoom:     MAP_FLY_OPTIONS.zoom,
+              pitch:    MAP_FLY_OPTIONS.pitch,
+              bearing:  MAP_FLY_OPTIONS.bearing,
+              duration: MAP_FLY_OPTIONS.duration,
+              essential: true,
+            });
+          }
+        }, 500);
 
-        setMapLoaded(true);
-        setMapInstance(map);
+        setLoaded(true);
+        setMapInst(map);
       });
 
-      // Cursor
-      map.on("mouseenter", "3d-buildings", () => {
-        map.getCanvas().style.cursor = "pointer";
-      });
-      map.on("mouseleave", "3d-buildings", () => {
-        map.getCanvas().style.cursor = "";
+      map.on("error", (e) => {
+        // Silently swallow style/tile errors in production
+        if (process.env.NODE_ENV !== "production") console.warn("Map error:", e);
       });
     });
 
@@ -164,152 +191,137 @@ export function InteractiveMap() {
     };
   }, []);
 
-  // ── Map controls ──────────────────────────────────────────────────────────
+  // Resize on fullscreen toggle
+  useEffect(() => {
+    setTimeout(() => mapRef.current?.resize(), 50);
+  }, [fullscreen]);
+
+  // ── Controls ──────────────────────────────────────────────────────────────
+  const zoomIn  = useCallback(() => mapRef.current?.zoomIn({ duration: 350 }), []);
+  const zoomOut = useCallback(() => mapRef.current?.zoomOut({ duration: 350 }), []);
+
   const resetView = useCallback(() => {
-    mapRef.current?.flyTo(MAP_FLY_OPTIONS as Parameters<typeof mapRef.current.flyTo>[0]);
+    mapRef.current?.flyTo({
+      center:  MAP_FLY_OPTIONS.center,
+      zoom:    MAP_FLY_OPTIONS.zoom,
+      pitch:   MAP_FLY_OPTIONS.pitch,
+      bearing: MAP_FLY_OPTIONS.bearing,
+      duration: 1800,
+      essential: true,
+    });
   }, []);
 
-  const zoomIn  = useCallback(() => mapRef.current?.zoomIn({ duration: 400 }), []);
-  const zoomOut = useCallback(() => mapRef.current?.zoomOut({ duration: 400 }), []);
+  const resetNorth = useCallback(() => {
+    mapRef.current?.easeTo({ bearing: 0, duration: 800 });
+  }, []);
 
-  // ── Fallback (no token) ───────────────────────────────────────────────────
-  if (!hasToken) {
-    return (
-      <div className="relative w-full h-[500px] rounded-2xl overflow-hidden flex items-center justify-center"
-        style={{ background: "linear-gradient(135deg,#050a14,#0d1629)", border: "1px solid rgba(0,102,255,0.15)" }}>
-        <div className="absolute inset-0 grid-bg opacity-30" />
-        <div className="relative text-center p-8">
-          <div className="text-4xl mb-4">🗺️</div>
-          <p className="text-white/50 text-sm mb-2">Mapbox token not configured</p>
-          <p className="text-white/30 text-xs">Add <code className="text-blue-400">NEXT_PUBLIC_MAPBOX_TOKEN</code> to <code className="text-blue-400">.env.local</code></p>
-          <a href="https://account.mapbox.com" target="_blank" rel="noopener noreferrer"
-            className="inline-flex mt-4 items-center gap-2 px-4 py-2 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-medium hover:bg-blue-600/30 transition-all">
-            Get Free Token →
-          </a>
-        </div>
-        <MapOverlayCard />
-      </div>
-    );
-  }
+  const toggle3D = useCallback(() => {
+    const next = is3D ? 0 : MAP_FLY_OPTIONS.pitch;
+    mapRef.current?.easeTo({ pitch: next, duration: 700 });
+  }, [is3D]);
 
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.75, ease: [0.21, 0.47, 0.32, 0.98] }}
       className={`relative overflow-hidden rounded-2xl transition-all duration-500 ${
-        fullscreen
-          ? "fixed inset-4 z-[100]"
-          : "w-full h-[520px] md:h-[580px]"
+        fullscreen ? "fixed inset-3 z-[100] rounded-2xl" : "w-full h-[520px] md:h-[580px]"
       }`}
       style={{
-        border: "1px solid rgba(0,102,255,0.18)",
+        border: "1px solid rgba(0,102,255,.16)",
         boxShadow:
-          "0 32px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,102,255,0.07)",
+          "0 32px 80px rgba(0,0,0,.6), 0 0 60px rgba(0,102,255,.06)",
       }}
     >
-      {/* Map container */}
+      {/* Map canvas */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
 
-      {/* Loading shimmer */}
+      {/* Loading overlay */}
+      <AnimatePresence>{!loaded && <MapLoader />}</AnimatePresence>
+
+      {/* Cinematic top/bottom gradient veils */}
+      <div className="absolute inset-x-0 top-0 h-16 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, rgba(5,10,20,.55), transparent)" }} />
+      <div className="absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to top, rgba(5,10,20,.55), transparent)" }} />
+
+      {/* Overlay card */}
+      <AnimatePresence>{loaded && <MapOverlayCard />}</AnimatePresence>
+
+      {/* HQ marker */}
+      {loaded && mapInst && <HQMarker map={mapInst} />}
+
+      {/* ── Control panel — top right ── */}
+      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+        <MapControl icon={ZoomIn}   onClick={zoomIn}      title="Zoom in"  />
+        <MapControl icon={ZoomOut}  onClick={zoomOut}     title="Zoom out" />
+
+        {/* Divider */}
+        <div className="w-full h-px bg-white/[0.06] my-0.5" />
+
+        <MapControl
+          icon={Compass} onClick={resetNorth} title="Reset north"
+          active={Math.abs(bearing) > 3}
+        />
+        <MapControl
+          icon={RotateCcw} onClick={toggle3D} title={is3D ? "Flat view" : "3D view"}
+          active={is3D}
+        />
+        <MapControl icon={RotateCcw} onClick={resetView} title="Reset view" />
+
+        {/* Divider */}
+        <div className="w-full h-px bg-white/[0.06] my-0.5" />
+
+        <MapControl
+          icon={fullscreen ? Minimize2 : Maximize2}
+          onClick={() => setFullscreen((v) => !v)}
+          title={fullscreen ? "Exit fullscreen" : "Fullscreen"}
+          active={fullscreen}
+        />
+      </div>
+
+      {/* Bearing compass indicator */}
       <AnimatePresence>
-        {!mapLoaded && (
+        {Math.abs(bearing) > 3 && (
           <motion.div
-            key="loader"
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
-            className="absolute inset-0 z-10 flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg,#050a14,#0d1629)" }}
+            initial={{ opacity: 0, scale: .8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: .8 }}
+            className="absolute bottom-4 right-4 z-20"
+            title={`Bearing: ${bearing}°`}
           >
-            <div className="absolute inset-0 grid-bg opacity-20" />
-            <div className="relative flex flex-col items-center gap-4">
-              {/* Animated radar */}
-              <div className="relative w-16 h-16">
-                <div className="absolute inset-0 rounded-full border-2 border-blue-500/20 animate-ping" />
-                <div className="absolute inset-2 rounded-full border border-blue-500/40"
-                  style={{ animation: "spin 3s linear infinite" }} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_16px_rgba(0,102,255,0.8)]" />
-                </div>
-              </div>
-              <p className="text-xs text-white/40 font-medium tracking-widest uppercase">
-                Loading map…
-              </p>
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-blue-300"
+              style={{
+                background: "rgba(5,10,20,.88)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid rgba(0,102,255,.2)",
+              }}
+            >
+              <span style={{ transform: `rotate(${-bearing}deg)`, display: "inline-block" }}>N</span>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Top gradient fade (cinematic) */}
-      <div
-        className="absolute top-0 left-0 right-0 h-16 z-10 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to bottom,rgba(5,10,20,0.5),transparent)",
-        }}
-      />
-
-      {/* Bottom gradient fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-16 z-10 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to top,rgba(5,10,20,0.5),transparent)",
-        }}
-      />
-
-      {/* Overlay card */}
-      {mapLoaded && <MapOverlayCard />}
-
-      {/* Map controls — top right */}
-      <div className="absolute top-5 right-5 z-20 flex flex-col gap-2">
-        {[
-          { icon: ZoomIn,     action: zoomIn,     title: "Zoom in"   },
-          { icon: ZoomOut,    action: zoomOut,    title: "Zoom out"  },
-          { icon: RotateCcw,  action: resetView,  title: "Reset view"},
-          {
-            icon: fullscreen ? Minimize2 : Maximize2,
-            action: () => setFullscreen((v) => !v),
-            title: fullscreen ? "Exit fullscreen" : "Fullscreen",
-          },
-        ].map(({ icon: Icon, action, title }) => (
-          <button
-            key={title}
-            onClick={action}
-            title={title}
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white/60 hover:text-white transition-all"
-            style={{
-              background: "rgba(5,10,20,0.85)",
-              backdropFilter: "blur(16px)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-            }}
-          >
-            <Icon className="w-4 h-4" />
-          </button>
-        ))}
+      {/* Attribution */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+        <span className="text-[9px] text-white/15">
+          © <a href="https://carto.com/" target="_blank" rel="noopener noreferrer"
+            className="pointer-events-auto hover:text-white/35 transition-colors">CARTO</a>
+          {" "}© <a href="https://www.openstreetmap.org/copyright" target="_blank"
+            rel="noopener noreferrer"
+            className="pointer-events-auto hover:text-white/35 transition-colors">OpenStreetMap</a>
+        </span>
       </div>
-
-      {/* Mapbox attribution */}
-      <div className="absolute bottom-3 right-3 z-20">
-        <a
-          href="https://www.mapbox.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[9px] text-white/20 hover:text-white/40 transition-colors"
-        >
-          © Mapbox
-        </a>
-      </div>
-
-      {/* Marker rendered after map loads */}
-      {mapLoaded && mapInstance && <HQMarker map={mapInstance} />}
 
       {/* Fullscreen backdrop */}
       {fullscreen && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm -z-10"
+          className="fixed inset-0 bg-black/75 backdrop-blur-md -z-10"
           onClick={() => setFullscreen(false)}
         />
       )}

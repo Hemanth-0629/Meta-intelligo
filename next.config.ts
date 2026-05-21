@@ -5,13 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  // Prevent Mapbox GL worker from being bundled server-side
   webpack: (config, { isServer }) => {
     if (isServer) {
-      // Mapbox uses browser APIs — exclude from server bundle
+      // MapLibre GL uses browser-only WebGL APIs — exclude from server bundle
       config.externals = [
         ...(Array.isArray(config.externals) ? config.externals : []),
-        "mapbox-gl",
+        "maplibre-gl",
       ];
     }
     return config;
