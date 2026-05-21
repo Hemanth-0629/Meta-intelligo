@@ -9,7 +9,7 @@ import {
   Brain, Cloud, Code2, GitBranch, Globe, Layers, LayoutDashboard,
   Menu, Network, Package, Settings, Users, X, ChevronDown, ArrowRight,
   Building2, Heart, Banknote, ShieldCheck, Factory, ShoppingBag, Truck,
-  LogIn,
+  CircleUser,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ComingSoonModal } from "@/components/ui/ComingSoonModal";
@@ -255,7 +255,7 @@ export function Navbar() {
                 aria-label="Employee Login"
                 className="w-9 h-9 flex items-center justify-center rounded-lg text-white/50 hover:text-white hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/[0.18] transition-all"
               >
-                <LogIn className="w-4 h-4" />
+                <CircleUser className="w-4 h-4" />
               </button>
               <Link href="/contact" className="btn-primary text-sm px-5 py-2.5">
                 Get Started
