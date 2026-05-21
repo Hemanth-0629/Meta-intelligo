@@ -4,34 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Brain,
-  Cloud,
-  Code2,
-  Cpu,
-  Database,
-  GitBranch,
-  Globe,
-  Layers,
-  LayoutDashboard,
-  Menu,
-  Network,
-  Package,
-  Settings,
-  Users,
-  X,
-  ChevronDown,
-  ArrowRight,
-  Building2,
-  Heart,
-  Banknote,
-  ShieldCheck,
-  Factory,
-  ShoppingBag,
-  Truck,
+  Brain, Cloud, Code2, GitBranch, Globe, Layers, LayoutDashboard,
+  Menu, Network, Package, Settings, Users, X, ChevronDown, ArrowRight,
+  Building2, Heart, Banknote, ShieldCheck, Factory, ShoppingBag, Truck,
+  LogIn,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ComingSoonModal } from "@/components/ui/ComingSoonModal";
 
 const services = [
   { label: "AI & Machine Learning", href: "/services#ai-ml", icon: Brain, desc: "Intelligent models & automation" },
@@ -69,6 +50,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [loginModal, setLoginModal] = useState(false);
   const pathname = usePathname();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -94,6 +76,7 @@ export function Navbar() {
 
   return (
     <>
+      <ComingSoonModal open={loginModal} onClose={() => setLoginModal(false)} />
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -264,7 +247,15 @@ export function Navbar() {
             </nav>
 
             {/* CTA */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-2.5">
+              {/* Employee Login */}
+              <button
+                onClick={() => setLoginModal(true)}
+                className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg text-white/60 hover:text-white hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/[0.15] transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                Employee Login
+              </button>
               <Link href="/contact" className="btn-primary text-sm px-5 py-2.5">
                 Get Started
                 <ArrowRight className="w-4 h-4" />

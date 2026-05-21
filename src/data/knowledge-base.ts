@@ -486,7 +486,7 @@ export const knowledgeBase: KnowledgeEntry[] = [
     keywords: ["jobs", "career", "hiring", "work", "employment", "openings", "positions", "join", "vacancies", "opportunity", "recruit"],
     answer:
       "🚀 **Careers at Meta Intelligo:**\n\nWe're actively hiring passionate technologists!\n\n**Open Roles:**\n• Senior AI/ML Engineer\n• Full-Stack Software Engineer\n• Cloud & DevOps Engineer\n• QA Automation Engineer\n• Data Analyst\n• UI/UX Designer\n\n**Why join us?**\n✅ Competitive salary + bonuses\n✅ ₹50,000/year learning budget\n✅ Work on enterprise-scale AI projects\n✅ Mentorship from industry leaders\n✅ Flexible hybrid work model",
-    suggestions: ["Apply Now", "Life at Meta Intelligo", "Internship Program"],
+    suggestions: ["Apply Now", "Apply for Internships", "Internship Program", "Courses & Training"],
     cta: { label: "View Open Roles", href: "/careers" },
   },
 
@@ -503,11 +503,13 @@ export const knowledgeBase: KnowledgeEntry[] = [
       "Intern at Meta Intelligo",
       "Graduate program",
       "Fresher jobs",
+      "Apply for internship",
+      "How to apply for internship",
     ],
-    keywords: ["internship", "intern", "student", "fresher", "graduate", "trainee", "summer", "junior", "entry level", "college", "campus"],
+    keywords: ["internship", "intern", "student", "fresher", "graduate", "trainee", "summer", "junior", "entry level", "college", "campus", "apply internship"],
     answer:
-      "🎓 **Internship & Fresher Programs:**\n\nWe welcome fresh graduates and students!\n\n**Internship Programs:**\n• 3–6 month paid internships\n• Real project assignments (not just coffee runs!)\n• Mentorship by senior engineers\n• Technology: AI, Cloud, Full Stack, QA\n• Opportunity to convert to full-time role\n\n**Eligibility:**\n• B.Tech / BCA / MCA / M.Tech\n• Basic programming knowledge\n• Eagerness to learn\n\n📧 Send resume to: info@metaintelligo.com",
-    suggestions: ["Courses & Training", "Open Positions", "Apply Now"],
+      "🎓 **Internship Program at Meta Intelligo:**\n\nWe offer **paid 3–6 month internships** for students and fresh graduates!\n\n**What you get:**\n• Real enterprise project experience\n• Mentorship by senior engineers\n• Exposure to AI, Cloud, DevOps, Full Stack & QA\n• Certificate of completion\n• Pre-placement offer opportunity\n\n**Who can apply:**\n• B.Tech / BCA / MCA / M.Tech students\n• Basic programming knowledge required\n• Passion to learn & build\n\n👇 **Click the button below or use the 'Apply for Internship' button at the bottom-left of the page to apply instantly!**",
+    suggestions: ["Courses & Training", "Placement Program", "Careers & Jobs", "Contact Us"],
     cta: { label: "Apply for Internship", href: "/careers" },
   },
 

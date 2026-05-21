@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { FloatingContact } from "@/components/ui/FloatingContact";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { ChatWidget } from "@/components/chatbot/ChatWidget";
+import { InternshipButton } from "@/components/ui/InternshipButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -84,6 +85,7 @@ export default function RootLayout({
           <Footer />
           <FloatingContact />
           <ChatWidget />
+          <InternshipButton />
         </SmoothScroll>
       </body>
     </html>

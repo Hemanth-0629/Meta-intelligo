@@ -188,23 +188,7 @@ export function ContactPageFull() {
                 </div>
               </AnimatedSection>
 
-              <AnimatedSection delay={0.2}>
-                <div className="glass-card rounded-2xl p-8">
-                  <h3 className="text-sm font-bold text-white mb-3">Response time</h3>
-                  <div className="space-y-3">
-                    {[
-                      { label: "WhatsApp / Phone", time: "Within 1 hour", color: "text-green-400" },
-                      { label: "Email inquiry", time: "Within 4 hours", color: "text-blue-400" },
-                      { label: "Project consultation", time: "Within 1 business day", color: "text-cyan-400" },
-                    ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between text-sm">
-                        <span className="text-white/50">{item.label}</span>
-                        <span className={`font-medium ${item.color}`}>{item.time}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </AnimatedSection>
+              {/* Response time section removed */}
             </div>
 
             {/* Right — Contact Form */}
@@ -264,10 +248,10 @@ export function ContactPageFull() {
                             <input
                               type="text"
                               required
-                              placeholder="John Smith"
+                              placeholder=""
                               value={formData.name}
                               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
                             />
                           </div>
                           <div>
@@ -276,10 +260,10 @@ export function ContactPageFull() {
                             </label>
                             <input
                               type="text"
-                              placeholder="Acme Corporation"
+                              placeholder=""
                               value={formData.company}
                               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
                             />
                           </div>
                         </div>
@@ -292,22 +276,23 @@ export function ContactPageFull() {
                             <input
                               type="email"
                               required
-                              placeholder="you@company.com"
+                              placeholder=""
                               value={formData.email}
                               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
                             />
                           </div>
                           <div>
                             <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">
-                              Phone Number
+                              Phone Number *
                             </label>
                             <input
                               type="tel"
-                              placeholder="+91 98765 43210"
+                              required
+                              placeholder=""
                               value={formData.phone}
                               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all"
                             />
                           </div>
                         </div>
@@ -332,15 +317,15 @@ export function ContactPageFull() {
 
                         <div>
                           <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">
-                            Project Details *
+                            Description *
                           </label>
                           <textarea
                             required
                             rows={5}
-                            placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
+                            placeholder=""
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all resize-none"
+                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.06] transition-all resize-none"
                           />
                         </div>
 
