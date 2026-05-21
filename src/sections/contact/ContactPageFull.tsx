@@ -13,6 +13,7 @@ import {
   Send,
 } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { InteractiveMap } from "@/components/map/InteractiveMap";
 
 const services = [
   "AI & Machine Learning",
@@ -360,33 +361,19 @@ export function ContactPageFull() {
         </div>
       </section>
 
-      {/* Map placeholder */}
+      {/* Premium Interactive Map */}
       <section className="relative py-16 bg-space-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimatedSection>
-            <div className="glass-card rounded-2xl overflow-hidden">
-              <div className="h-72 bg-gradient-to-br from-space-800 to-space-900 flex items-center justify-center relative">
-                <div className="absolute inset-0 grid-bg opacity-30" />
-                <div className="relative text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-4">
-                    <MapPin className="w-8 h-8 text-blue-400" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">Meta Intelligo HQ</h3>
-                  <p className="text-white/40 text-sm">
-                    Novel MSR Building, Marathahalli, Bengaluru 560037
-                  </p>
-                  <a
-                    href="https://maps.google.com/?q=Marathahalli+Bengaluru"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                  >
-                    Open in Google Maps <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
-            </div>
+          <AnimatedSection className="mb-8 text-center">
+            <div className="section-tag mx-auto mb-4">Find Us</div>
+            <h2 className="text-3xl font-bold text-white tracking-tight mb-2">
+              Visit our <span className="text-gradient">headquarters</span>
+            </h2>
+            <p className="text-white/40 text-sm">
+              Novel MSR Building, Marathahalli, Bengaluru 560037
+            </p>
           </AnimatedSection>
+          <InteractiveMap />
         </div>
       </section>
     </>
