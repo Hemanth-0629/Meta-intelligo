@@ -23,7 +23,7 @@ export function CTASection() {
             your <span className="text-gradient">enterprise?</span>
           </h2>
           <p className="text-xl text-white/50 max-w-2xl mx-auto mb-12">
-            Join 1,000+ enterprises that trust Meta Intelligo to deliver
+            Join 10+ enterprises that trust Meta Intelligo to deliver
             cutting-edge AI, cloud, and digital transformation outcomes.
             Let&apos;s start with a free consultation.
           </p>

@@ -91,7 +91,7 @@ const milestones = [
   { year: "2019", event: "Launched Cloud & DevOps practice; reached 100+ active clients" },
   { year: "2021", event: "Opened staffing & recruitment division; crossed 500+ placements" },
   { year: "2022", event: "Expanded to IoT, BIM, and specialized industry verticals" },
-  { year: "2024", event: "1,000+ global clients; recognized as leading AI technology partner" },
+  { year: "2024", event: "10+ global clients; recognized as leading AI technology partner" },
 ];
 
 export function AboutPage() {

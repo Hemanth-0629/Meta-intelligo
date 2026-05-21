@@ -20,7 +20,7 @@ const techBadges = [
 ];
 
 const floatingMetrics = [
-  { value: "1,000+", label: "Global Clients", icon: Globe, color: "text-blue-400" },
+  { value: "10+", label: "Global Clients", icon: Globe, color: "text-blue-400" },
   { value: "99.9%", label: "Uptime SLA", icon: Shield, color: "text-green-400" },
   { value: "65%", label: "Cost Reduction", icon: Zap, color: "text-yellow-400" },
 ];

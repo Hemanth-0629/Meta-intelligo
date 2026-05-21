@@ -17,7 +17,7 @@ export const knowledgeBase: KnowledgeEntry[] = [
     ],
     keywords: ["meta intelligo", "company", "about", "who", "what do you do", "overview", "introduction", "tell me"],
     answer:
-      "**Meta Intelligo Technologies** is an AI-driven enterprise technology company headquartered in Bengaluru, India.\n\nWe deliver end-to-end digital transformation solutions across:\n• 🤖 AI & Machine Learning\n• ☁️ Cloud Computing & DevOps\n• 💻 Custom Software Development\n• 📱 Product Engineering\n• 👥 Staffing & Recruitment\n\nWe serve 1,000+ clients across Healthcare, Banking, Insurance, Manufacturing, Retail, and more.",
+      "**Meta Intelligo Technologies** is an AI-driven enterprise technology company headquartered in Bengaluru, India.\n\nWe deliver end-to-end digital transformation solutions across:\n• 🤖 AI & Machine Learning\n• ☁️ Cloud Computing & DevOps\n• 💻 Custom Software Development\n• 📱 Product Engineering\n• 👥 Staffing & Recruitment\n\nWe serve 10+ clients across Healthcare, Banking, Insurance, Manufacturing, Retail, and more.",
     suggestions: ["Our Services", "Our Products", "Courses & Training", "Contact Us"],
     cta: { label: "Explore Services", href: "/services" },
   },
@@ -54,7 +54,7 @@ export const knowledgeBase: KnowledgeEntry[] = [
     ],
     keywords: ["clients", "stats", "achievements", "experience", "years", "track record", "how many", "portfolio", "numbers"],
     answer:
-      "🏆 **Meta Intelligo by the numbers:**\n\n• **1,000+** Global clients served\n• **8+ Years** of enterprise excellence\n• **65%** Average cost reduction delivered\n• **99.9%** Uptime SLA on managed services\n• **500+** Professionals placed\n• **11** Service lines\n• **8** Industry verticals",
+      "🏆 **Meta Intelligo by the numbers:**\n\n• **10+** Global clients served\n• **7+ Years** of enterprise excellence\n• **65%** Average cost reduction delivered\n• **99.9%** Uptime SLA on managed services\n• **500+** Professionals placed\n• **11** Service lines\n• **8** Industry verticals",
     suggestions: ["Our Services", "Our Portfolio", "Careers"],
   },
 

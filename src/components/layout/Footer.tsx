@@ -94,7 +94,7 @@ export function Footer() {
                 <span className="text-gradient"> today.</span>
               </h2>
               <p className="text-white/50 max-w-xl">
-                Join 1,000+ businesses that trust Meta Intelligo to deliver
+                Join 10+ businesses that trust Meta Intelligo to deliver
                 measurable digital transformation outcomes.
               </p>
             </div>

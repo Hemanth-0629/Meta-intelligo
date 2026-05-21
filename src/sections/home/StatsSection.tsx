@@ -9,7 +9,7 @@ import { TrendingUp, Users, Award, Clock } from "lucide-react";
 
 const stats = [
   {
-    value: 1000,
+    value: 10,
     suffix: "+",
     label: "Global Clients Served",
     desc: "Across 20+ countries",
@@ -29,7 +29,7 @@ const stats = [
     border: "border-green-500/20",
   },
   {
-    value: 8,
+    value: 7,
     suffix: "+",
     label: "Years of Excellence",
     desc: "Enterprise technology delivery",

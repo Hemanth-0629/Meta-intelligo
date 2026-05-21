@@ -558,7 +558,7 @@ export function CareersPage() {
               { value: "50+", label: "Team Members", color: "text-blue-400" },
               { value: "4.8★", label: "Glassdoor Rating", color: "text-yellow-400" },
               { value: "92%", label: "Employee Satisfaction", color: "text-green-400" },
-              { value: "8+", label: "Years of Growth", color: "text-purple-400" },
+              { value: "7+", label: "Years of Growth", color: "text-purple-400" },
             ].map((stat) => (
               <div key={stat.label} className="glass-card rounded-2xl p-6 text-center">
                 <div className={`text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>

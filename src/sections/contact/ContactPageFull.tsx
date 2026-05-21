@@ -174,7 +174,7 @@ export function ContactPageFull() {
                       <MapPin className="w-5 h-5 text-purple-400" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-white mb-1">Headquarters</h3>
+                      <h3 className="text-sm font-bold text-white mb-1">Head Office</h3>
                       <p className="text-sm text-white/50 leading-relaxed">
                         Novel MSR Building, 1st Main St,
                         <br />
@@ -367,7 +367,7 @@ export function ContactPageFull() {
           <AnimatedSection className="mb-8 text-center">
             <div className="section-tag mx-auto mb-4">Find Us</div>
             <h2 className="text-3xl font-bold text-white tracking-tight mb-2">
-              Visit our <span className="text-gradient">headquarters</span>
+              Visit our <span className="text-gradient">head office</span>
             </h2>
             <p className="text-white/40 text-sm">
               Novel MSR Building, Marathahalli, Bengaluru 560037
