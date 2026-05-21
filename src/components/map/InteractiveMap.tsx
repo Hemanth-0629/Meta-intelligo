@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2, Compass,
+  Plus, Minus, RotateCcw, Maximize2, Minimize2, Compass, Layers, Home,
 } from "lucide-react";
 import { HQMarker }      from "./HQMarker";
 import { MapOverlayCard } from "./MapOverlayCard";
@@ -197,8 +197,20 @@ export function InteractiveMap() {
   }, [fullscreen]);
 
   // ── Controls ──────────────────────────────────────────────────────────────
-  const zoomIn  = useCallback(() => mapRef.current?.zoomIn({ duration: 350 }), []);
-  const zoomOut = useCallback(() => mapRef.current?.zoomOut({ duration: 350 }), []);
+  // Use easeTo with explicit zoom delta — works reliably across all MapLibre versions
+  const zoomIn = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({ zoom: map.getZoom() + 1, duration: 400 });
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const next = map.getZoom() - 1;
+    if (next < (map.getMinZoom() ?? 0)) return;
+    map.easeTo({ zoom: next, duration: 400 });
+  }, []);
 
   const resetView = useCallback(() => {
     mapRef.current?.flyTo({
@@ -255,22 +267,22 @@ export function InteractiveMap() {
       {loaded && mapInst && <HQMarker map={mapInst} />}
 
       {/* ── Control panel — top right ── */}
-      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-        <MapControl icon={ZoomIn}   onClick={zoomIn}      title="Zoom in"  />
-        <MapControl icon={ZoomOut}  onClick={zoomOut}     title="Zoom out" />
+      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2 pointer-events-auto">
+        <MapControl icon={Plus}    onClick={zoomIn}   title="Zoom in"  />
+        <MapControl icon={Minus}   onClick={zoomOut}  title="Zoom out" />
 
         {/* Divider */}
         <div className="w-full h-px bg-white/[0.06] my-0.5" />
 
         <MapControl
-          icon={Compass} onClick={resetNorth} title="Reset north"
+          icon={Compass}   onClick={resetNorth} title="Reset north"
           active={Math.abs(bearing) > 3}
         />
         <MapControl
-          icon={RotateCcw} onClick={toggle3D} title={is3D ? "Flat view" : "3D view"}
+          icon={Layers}    onClick={toggle3D}   title={is3D ? "Flat view" : "3D view"}
           active={is3D}
         />
-        <MapControl icon={RotateCcw} onClick={resetView} title="Reset view" />
+        <MapControl icon={Home}    onClick={resetView} title="Reset view" />
 
         {/* Divider */}
         <div className="w-full h-px bg-white/[0.06] my-0.5" />
