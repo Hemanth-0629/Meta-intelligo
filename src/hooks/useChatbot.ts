@@ -24,9 +24,9 @@ function makeGreeting(): ChatMessage {
 }
 
 function loadSession(): ChatMessage[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined" || !window.localStorage) return [];
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const raw = window.localStorage.getItem(SESSION_KEY);
     if (!raw) return [];
     const parsed: ChatSession = JSON.parse(raw);
     if (!parsed.messages?.length) return [];
@@ -40,13 +40,13 @@ function loadSession(): ChatMessage[] {
 }
 
 function saveSession(messages: ChatMessage[]) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !window.localStorage) return;
   try {
     const session: ChatSession = {
       messages: messages.slice(-MAX_HISTORY),
       context: [],
     };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   } catch { /* quota exceeded */ }
 }
 
@@ -144,7 +144,7 @@ export function useChatbot() {
 
   const clearHistory = useCallback(() => {
     setMessages([makeGreeting()]);
-    try { localStorage.removeItem(SESSION_KEY); } catch { /* */ }
+    try { if (typeof window !== "undefined" && window.localStorage) window.localStorage.removeItem(SESSION_KEY); } catch { /* */ }
   }, []);
 
   const handleKeyDown = useCallback(
