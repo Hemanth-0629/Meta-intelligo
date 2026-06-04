@@ -1,9 +1,9 @@
+/* MapLibre GL JS — free, no API key */
+@import "maplibre-gl/dist/maplibre-gl.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* MapLibre GL JS — free, no API key */
-@import "maplibre-gl/dist/maplibre-gl.css";
 
 @layer base {
   :root {

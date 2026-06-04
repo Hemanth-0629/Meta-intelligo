@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Quote, Star, ArrowRight, ExternalLink } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
-import Link from "next/link";
 
 // Real people from Meta Intelligo — photos extracted from company PDF
 const testimonials = [
@@ -17,7 +16,7 @@ const testimonials = [
     rating: 5,
     quote:
       "Meta Intelligo's AI training program completely transformed my career. The hands-on curriculum and mentorship from industry practitioners gave me real-world skills that Ernst & Young looks for. Within months, I transitioned into a Data Analyst role at one of the Big Four.",
-    highlight: "Big Four placement",
+    highlight: "Tech Innovation",
     highlight_color: "text-blue-400",
     badge_bg: "bg-blue-500/10 border-blue-500/20",
     avatar_border: "ring-blue-500/40",
@@ -45,14 +44,14 @@ const testimonials = [
     rating: 5,
     quote:
       "The QA automation skills I developed through Meta Intelligo's program directly enabled me to land my role at Infosys. Training went far beyond theory — we built real automation frameworks on actual production systems. That practical depth is what sets Meta Intelligo apart.",
-    highlight: "Infosys placement",
+    highlight: "Engineering Excellence",
     highlight_color: "text-purple-400",
     badge_bg: "bg-purple-500/10 border-purple-500/20",
     avatar_border: "ring-purple-500/40",
   },
 ];
 
-const placedAt = ["E&Y", "Infosys", "TCS", "Wipro", "Accenture", "Deloitte", "IBM", "Capgemini", "Cognizant", "HCL"];
+
 
 export function TestimonialsSection() {
   return (
@@ -61,12 +60,12 @@ export function TestimonialsSection() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AnimatedSection className="text-center mb-16">
+        <AnimatedSection className="text-center mb-10">
           <div className="section-tag mx-auto mb-5">Real Success Stories</div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+          <h2 className="text-5xl md:text-6xl font-bold text-white tracking-tight mb-4 drop-shadow-[0_2px_15px_rgba(255,255,255,0.15)]">
             Trusted by professionals at
             <br />
-            <span className="text-gradient">world-class organizations</span>
+            <span className="bg-gradient-to-r from-blue-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">world-class organizations</span>
           </h2>
           <p className="text-white/50 max-w-xl mx-auto">
             Our graduates and team members go on to shape the future of enterprise
@@ -75,7 +74,7 @@ export function TestimonialsSection() {
         </AnimatedSection>
 
         {/* Testimonial Cards with real photos */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
@@ -138,30 +137,6 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Placement companies row */}
-        <AnimatedSection>
-          <div className="glass-card rounded-2xl p-8">
-            <p className="text-center text-xs font-semibold text-white/30 uppercase tracking-widest mb-7">
-              Our alumni and team members are placed at
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {placedAt.map((company) => (
-                <span
-                  key={company}
-                  className="px-5 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm font-semibold text-white/30 hover:text-white/60 hover:bg-white/[0.06] transition-all cursor-default"
-                >
-                  {company}
-                </span>
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Link href="/careers" className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">
-                Join our team or placement program
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </AnimatedSection>
       </div>
     </section>
   );
